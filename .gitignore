@@ -21,3 +21,7 @@ __pycache__/
 /theme
 /plugins
 /.pytest_cache
+
+/*.env
+!/.template.env
+!/.DEBUG.env
