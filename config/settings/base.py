@@ -1,12 +1,16 @@
-import os
-
 from pathlib import Path
+
+from .tools import get_env_variable
 
 from rdmo.core.utils import sanitize_url
 
 from dotenv import load_dotenv
 
-LOAD_DEBUG_ENV = os.environ.get('LOAD_DEBUG_ENV', False)
+'''
+Determine if the Debug or Production environment should be loaded.
+'''
+
+LOAD_DEBUG_ENV = get_env_variable('LOAD_DEBUG_ENV',default=False, var_type='bool')
 
 if LOAD_DEBUG_ENV:
     print(f'\n=== LOAD_DEBUG_ENV=True, using .DEBUG.env ===\n')
@@ -15,32 +19,15 @@ else:
     load_dotenv('.env')
 
 '''
-Use of environment variables
-https://github.com/feldroy/two-scoops-of-django-3.x/blob/master/code/chapter_05_example_16.py
+Multisite settings with SITE_ID and a common DB .env file in MULTISITE_DB_ENV_FILE 
 '''
-# Normally you should not import ANYTHING from Django directly
-# into your settings, but ImproperlyConfigured is an exception.
-from django.core.exceptions import ImproperlyConfigured
 
-def get_env_variable(var_name, default=None, var_type='str'):
-    """Get the environment variable or return exception if no default value is given."""
-    try:
-        env_var = os.environ[var_name]
-        if var_type == 'int':
-            env_var = int(env_var)
-        elif var_type == 'bool':
-            env_var = env_var.upper() == 'TRUE'
-
-        return env_var
-    except KeyError:
-        
-        if default != None:
-            return default
-        error_msg = 'Missing key and default.\nPlease set the {} environment variable'.format(var_name)
-        raise ImproperlyConfigured(error_msg)
-
-
+MULTISITE = get_env_variable('MULTSITE', default=False, var_type='bool')
 SITE_ID = get_env_variable('SITE_ID', var_type='int')
+USE_MULTISITE_DB = get_env_variable('USE_MULTISITE_DB', default=False, var_type='bool')
+if (MULTISITE or SITE_ID) and USE_MULTISITE_DB:
+    MULTISITE_DB_ENV_FILE = get_env_variable('MULTISITE_DB_ENV_FILE', var_type='path')
+    load_dotenv(MULTISITE_DB_ENV_FILE, override=True)
 
 '''
 Path settings using pathlib
@@ -74,6 +61,7 @@ ALLOWED_HOSTS = ALLOWED_HOSTS_DEFAULT + ALLOWED_HOSTS_ENV if any(ALLOWED_HOSTS_E
 '''
 Language code and time zone
 '''
+
 LANGUAGE_CODE = 'de-de'
 TIME_ZONE = 'Europe/Berlin'
 
@@ -96,7 +84,6 @@ if BASE_URL:
     LANGUAGE_COOKIE_PATH = sanitize_url(BASE_URL + '/')
     SESSION_COOKIE_PATH = sanitize_url(BASE_URL + '/')
 
-
 '''
 RDMO default URI prefix
 https://rdmo.readthedocs.io/en/latest/management/index.html
@@ -106,17 +93,15 @@ e.g. 'https://rdmo.uni-abc.de/terms/'
 DEFAULT_URI_PREFIX = get_env_variable('DEFAULT_URI_PREFIX')
 
 '''
-Language code and time zone
+Locale translations paths
 '''
-LANGUAGE_CODE = 'de-de'
-TIME_ZONE = 'Europe/Berlin'
-
 
 LOCALE_PATHS = (
     BASE_DIR / 'locale/',
     BASE_DIR / 'theme/templates/locale/',
     BASE_DIR / 'accounts/templates/locale/',
 )
+
 '''
 The database connection to be used, see also:
 http://rdmo.readthedocs.io/en/latest/configuration/databases.html
@@ -203,7 +188,7 @@ Logging configuration
 Added logging.handlers.WatchedFileHandler to handlers for log rotation
 '''
 
-LOGGING_DIR = BASE_DIR / 'log'
+LOGGING_DIR = get_env_variable('LOGGING_DIR', default=BASE_DIR / 'log',var_type='path')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

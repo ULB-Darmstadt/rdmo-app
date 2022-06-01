@@ -8,11 +8,9 @@ cryptographic signing, and should be set to a unique, unpredictable value.
 SECRET_KEY = get_env_variable('SECRET_KEY')
 
 '''
-The list of URLs und which this application available
+The list of URLs und which this application available.
+The setting ALLOWED_HOSTS is set in base.py
 '''
-# ALLOWED_HOSTS_ENV = get_env_variable('ALLOWED_HOSTS').split(', ')
-
-# ALLOWED_HOSTS = ALLOWED_HOSTS_DEFAULT + ALLOWED_HOSTS_ENV if any(ALLOWED_HOSTS_ENV) else ALLOWED_HOSTS_DEFAULT
 
 '''
 Allauth configuration, see also:
@@ -82,37 +80,38 @@ http://rdmo.readthedocs.io/en/latest/configuration/authentication/ldap.html
 #     'django_auth_ldap.backend.LDAPBackend'
 # )
 
-
 '''
 Shibboleth, see also:
 http://rdmo.readthedocs.io/en/latest/configuration/authentication/shibboleth.html
 '''
 
-SHIBBOLETH = get_env_variable('SHIBBOLETH', default=False, var_type='bool')
+USE_SHIBBOLETH = get_env_variable('USE_SHIBBOLETH', default=False, var_type='bool')
 
-# PROFILE_UPDATE = False
-#
-# INSTALLED_APPS += ['shibboleth']
-#
-# SHIBBOLETH_ATTRIBUTE_MAP = {
-#     'uid': (True, 'username'),
-#     'givenName': (True, 'first_name'),
-#     'sn': (True, 'last_name'),
-#     'mail': (True, 'email'),
-# }
-#
-# AUTHENTICATION_BACKENDS.append('shibboleth.backends.ShibbolethRemoteUserBackend')
-#
-# MIDDLEWARE.insert(
-#     MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware') + 1,
-#     'shibboleth.middleware.ShibbolethRemoteUserMiddleware'
-# )
-#
-# LOGIN_URL = '/Shibboleth.sso/Login?target=/projects'
-# LOGOUT_URL = '/Shibboleth.sso/Logout'
+if USE_SHIBBOLETH:
 
+    PROFILE_UPDATE = False
+    
+    INSTALLED_APPS += ['shibboleth']
+    
+    SHIBBOLETH_ATTRIBUTE_MAP = {
+        'uid': (True, 'username'),
+        'givenName': (True, 'first_name'),
+        'sn': (True, 'last_name'),
+        'mail': (True, 'email'),
+    }
+    
+    AUTHENTICATION_BACKENDS.append('shibboleth.backends.ShibbolethRemoteUserBackend')
+    
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware') + 1,
+        'shibboleth.middleware.ShibbolethRemoteUserMiddleware'
+    )
+    
+    LOGIN_URL = '/Shibboleth.sso/Login?target=/projects'
+    LOGOUT_URL = '/Shibboleth.sso/Logout'
 
 '''
 EXPORT_REFERENCE_DOCX
 '''
-# EXPORT_REFERENCE_DOCX='/srv/rdmo/tu-darmstadt/theme/templates/template_RDMO-TUDA-Design.docx'
+
+EXPORT_REFERENCE_DOCX = get_env_variable('EXPORT_REFERENCE_DOCX', default='', var_type='path')

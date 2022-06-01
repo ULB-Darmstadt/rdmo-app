@@ -14,9 +14,9 @@ cryptographic signing, and should be set to a unique, unpredictable value.
 SECRET_KEY = get_env_variable('SECRET_KEY')
 
 '''
-The list of URLs und which this application available
+The list of URLs und which this application available.
+The setting ALLOWED_HOSTS is set in base.py
 '''
-# ALLOWED_HOSTS = 
 
 '''
 Allauth configuration, see also:
