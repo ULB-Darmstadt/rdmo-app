@@ -24,4 +24,4 @@ __pycache__/
 
 /*.env
 !/.template.env
-!/.DEBUG.env
+!/.template.DEBUG.env
