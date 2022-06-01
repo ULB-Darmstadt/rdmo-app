@@ -25,3 +25,4 @@ __pycache__/
 /*.env
 !/.template.env
 !/.template.DEBUG.env
+!/.template.multisite.DB.env
