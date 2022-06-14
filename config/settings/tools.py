@@ -40,3 +40,19 @@ def get_env_variable(var_name: str, default=None, var_type: str='str'):
             return default
         error_msg = 'Missing key and default.\nPlease set the {} environment variable'.format(var_name)
         raise ImproperlyConfigured(error_msg)
+
+'''
+Load an .env file
+'''
+
+def check_env_file_exists(env_file):
+    ''' Loads the contents of given env file into the enviroment variables via load_dotenv'''
+    
+    if not env_file:
+        raise ImproperlyConfigured(f'\nThe given argument for ".env" file is False or None,\n{env_file}')
+    
+    if not isinstance(env_file, Path):
+        raise ImproperlyConfigured(f'\nThe given argument for ".env" file is not an instance of Path,\n{env_file}')
+    
+    if not env_file.exists():
+        raise ImproperlyConfigured(f'\nThe given argument for ".env" file does not exists,\n{env_file}')  
