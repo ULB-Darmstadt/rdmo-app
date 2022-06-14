@@ -1,36 +1,13 @@
 from pathlib import Path
 
-from .tools import get_env_variable
+from .tools import get_env_variable, check_env_file_exists
 
 from rdmo.core.utils import sanitize_url
 
 from dotenv import load_dotenv
 
 '''
-Determine if the Debug or Production environment should be loaded.
-'''
-
-LOAD_DEBUG_ENV = get_env_variable('LOAD_DEBUG_ENV',default=False, var_type='bool')
-
-if LOAD_DEBUG_ENV:
-    print(f'\n=== LOAD_DEBUG_ENV=True, using .DEBUG.env ===\n')
-    load_dotenv('.DEBUG.env')
-else:
-    load_dotenv('.env')
-
-'''
-Multisite settings with SITE_ID and a common DB .env file in MULTISITE_DB_ENV_FILE 
-'''
-
-MULTISITE = get_env_variable('MULTSITE', default=False, var_type='bool')
-SITE_ID = get_env_variable('SITE_ID', var_type='int')
-USE_MULTISITE_DB = get_env_variable('USE_MULTISITE_DB', default=False, var_type='bool')
-if (MULTISITE or SITE_ID) and USE_MULTISITE_DB:
-    MULTISITE_DB_ENV_FILE = get_env_variable('MULTISITE_DB_ENV_FILE', var_type='path')
-    load_dotenv(MULTISITE_DB_ENV_FILE, override=True)
-
-'''
-Path settings using pathlib
+Local Paths, settings using pathlib
 https://github.com/feldroy/two-scoops-of-django-3.x/blob/master/code/chapter_05_example_29.py
 '''
 # set path-dependend settings
@@ -42,13 +19,48 @@ FIXTURE_DIRS = (
     BASE_DIR / 'fixtures',
 )
 
-# import default settings from rdmo
-from rdmo.core.settings import *
-
 # update STATICFILES_DIRS for the vendor directory
 STATICFILES_DIRS = [
     BASE_DIR / 'vendor/'
 ]
+
+'''
+Environment variables 
+Determine if the Production or Debug environment file should be loaded.
+'''
+
+ENV_FILE_MAPPER = {
+    'production': BASE_DIR / '.env',
+    'debug': BASE_DIR / '.DEBUG.env'
+    }
+
+ENV_NAME = 'production'
+
+if get_env_variable('LOAD_DEBUG_ENV',default=False, var_type='bool'):
+    ENV_NAME = 'debug'
+    
+ENV_FILE = ENV_FILE_MAPPER.get(ENV_NAME)
+
+check_env_file_exists(ENV_FILE)
+load_dotenv(ENV_FILE, override=True)
+
+'''
+Import default settings from rdmo.core
+'''
+
+from rdmo.core.settings import *
+
+'''
+Multisite settings with SITE_ID and a common DB .env file in MULTISITE_DB_ENV_FILE 
+'''
+
+MULTISITE = get_env_variable('MULTISITE', default=False, var_type='bool')
+SITE_ID = get_env_variable('SITE_ID', var_type='int')
+USE_MULTISITE_DB = get_env_variable('USE_MULTISITE_DB', default=False, var_type='bool')
+if (MULTISITE or SITE_ID) and USE_MULTISITE_DB:
+    MULTISITE_DB_ENV_FILE = get_env_variable('MULTISITE_DB_ENV_FILE', var_type='path')
+    check_env_file_exists(MULTISITE_DB_ENV_FILE)
+    load_dotenv(MULTISITE_DB_ENV_FILE, override=True)
 
 '''
 The default list of URLs und which this application available
