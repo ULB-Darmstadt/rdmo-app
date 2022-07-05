@@ -88,7 +88,9 @@ http://rdmo.readthedocs.io/en/latest/configuration/authentication/shibboleth.htm
 USE_SHIBBOLETH = get_env_variable('USE_SHIBBOLETH', default=False, var_type='bool')
 
 if USE_SHIBBOLETH:
-
+    print('\n===-- SHIBBOLETH is enabled --===\n')
+    SHIBBOLETH = True
+    
     PROFILE_UPDATE = False
     
     INSTALLED_APPS += ['shibboleth']
