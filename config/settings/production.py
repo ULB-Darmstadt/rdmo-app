@@ -1,16 +1,40 @@
 from .base import * 
 
 '''
-A secret key for a particular Django installation. This is used to provide
-cryptographic signing, and should be set to a unique, unpredictable value.
+Authentication methods ordered by usage: shibboleth, django-allauth, ldap
 '''
 
-SECRET_KEY = get_env_variable('SECRET_KEY')
+'''
+Shibboleth, see also:
+http://rdmo.readthedocs.io/en/latest/configuration/authentication/shibboleth.html
+'''
 
-'''
-The list of URLs und which this application available.
-The setting ALLOWED_HOSTS is set in base.py
-'''
+USE_SHIBBOLETH = get_env_variable('USE_SHIBBOLETH', default=False, var_type='bool')
+
+if USE_SHIBBOLETH:
+    print('\n===-- SHIBBOLETH is enabled --===\n')
+    SHIBBOLETH = True
+    
+    PROFILE_UPDATE = False
+    
+    INSTALLED_APPS += ['shibboleth']
+    
+    SHIBBOLETH_ATTRIBUTE_MAP = {
+        'uid': (True, 'username'),
+        'givenName': (True, 'first_name'),
+        'sn': (True, 'last_name'),
+        'mail': (True, 'email'),
+    }
+    
+    AUTHENTICATION_BACKENDS.append('shibboleth.backends.ShibbolethRemoteUserBackend')
+    
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware') + 1,
+        'shibboleth.middleware.ShibbolethRemoteUserMiddleware'
+    )
+    
+    LOGIN_URL = '/Shibboleth.sso/Login?target=/projects'
+    LOGOUT_URL = '/Shibboleth.sso/Logout'
 
 '''
 Allauth configuration, see also:
@@ -19,6 +43,7 @@ http://rdmo.readthedocs.io/en/latest/configuration/authentication/allauth.html
 Keycloak via allauth:
 https://django-allauth.readthedocs.io/en/latest/providers.html#keycloak
 '''
+
 USE_ALLAUTH = get_env_variable('USE_ALLAUTH', default=False, var_type='bool')
 
 USE_KEYCLOAK = get_env_variable('USE_KEYCLOAK', default=False, var_type='bool')
@@ -54,6 +79,7 @@ if USE_KEYCLOAK:
     }
     INSTALLED_APPS += ['allauth.socialaccount.providers.keycloak',]
 
+
 '''
 LDAP, see also:
 http://rdmo.readthedocs.io/en/latest/configuration/authentication/ldap.html
@@ -79,38 +105,6 @@ http://rdmo.readthedocs.io/en/latest/configuration/authentication/ldap.html
 #     AUTHENTICATION_BACKENDS.index('django.contrib.auth.backends.ModelBackend'),
 #     'django_auth_ldap.backend.LDAPBackend'
 # )
-
-'''
-Shibboleth, see also:
-http://rdmo.readthedocs.io/en/latest/configuration/authentication/shibboleth.html
-'''
-
-USE_SHIBBOLETH = get_env_variable('USE_SHIBBOLETH', default=False, var_type='bool')
-
-if USE_SHIBBOLETH:
-    print('\n===-- SHIBBOLETH is enabled --===\n')
-    SHIBBOLETH = True
-    
-    PROFILE_UPDATE = False
-    
-    INSTALLED_APPS += ['shibboleth']
-    
-    SHIBBOLETH_ATTRIBUTE_MAP = {
-        'uid': (True, 'username'),
-        'givenName': (True, 'first_name'),
-        'sn': (True, 'last_name'),
-        'mail': (True, 'email'),
-    }
-    
-    AUTHENTICATION_BACKENDS.append('shibboleth.backends.ShibbolethRemoteUserBackend')
-    
-    MIDDLEWARE.insert(
-        MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware') + 1,
-        'shibboleth.middleware.ShibbolethRemoteUserMiddleware'
-    )
-    
-    LOGIN_URL = '/Shibboleth.sso/Login?target=/projects'
-    LOGOUT_URL = '/Shibboleth.sso/Logout'
 
 '''
 EXPORT_REFERENCE_DOCX

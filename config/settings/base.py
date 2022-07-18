@@ -26,7 +26,8 @@ STATICFILES_DIRS = [
 
 '''
 Environment variables 
-Determine if the Production or Debug environment file should be loaded.
+Determines if the Production or Debug environment file should be selected.
+Checks if the selected .env file exists in the BASE_DIR and loads it.
 '''
 
 ENV_FILE_MAPPER = {
@@ -54,9 +55,9 @@ from rdmo.core.settings import *
 Multisite settings with SITE_ID and a common DB .env file in MULTISITE_DB_ENV_FILE 
 '''
 
-MULTISITE = get_env_variable('MULTISITE', default=False, var_type='bool')
+MULTISITE = get_env_variable('MULTISITE', default=True, var_type='bool')
 SITE_ID = get_env_variable('SITE_ID', var_type='int')
-USE_MULTISITE_DB = get_env_variable('USE_MULTISITE_DB', default=False, var_type='bool')
+USE_MULTISITE_DB = get_env_variable('USE_MULTISITE_DB', default=True, var_type='bool')
 if (MULTISITE or SITE_ID) and USE_MULTISITE_DB:
     MULTISITE_DB_ENV_FILE = get_env_variable('MULTISITE_DB_ENV_FILE', var_type='path')
     check_env_file_exists(MULTISITE_DB_ENV_FILE)
@@ -95,6 +96,13 @@ if BASE_URL:
     CSRF_COOKIE_PATH = sanitize_url(BASE_URL + '/')
     LANGUAGE_COOKIE_PATH = sanitize_url(BASE_URL + '/')
     SESSION_COOKIE_PATH = sanitize_url(BASE_URL + '/')
+
+'''
+A secret key for a particular Django installation. This is used to provide
+cryptographic signing, and should be set to a unique, unpredictable value.
+'''
+
+SECRET_KEY = get_env_variable('SECRET_KEY')
 
 '''
 RDMO default URI prefix

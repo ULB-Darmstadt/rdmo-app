@@ -7,16 +7,40 @@ Debug mode, don't use this in production
 DEBUG = True
 
 '''
-A secret key for a particular Django installation. This is used to provide
-cryptographic signing, and should be set to a unique, unpredictable value.
+Authentication methods ordered by usage: shibboleth, django-allauth, ldap
 '''
 
-SECRET_KEY = get_env_variable('SECRET_KEY')
+'''
+Shibboleth, see also:
+http://rdmo.readthedocs.io/en/latest/configuration/authentication/shibboleth.html
+'''
 
-'''
-The list of URLs und which this application available.
-The setting ALLOWED_HOSTS is set in base.py
-'''
+USE_SHIBBOLETH = get_env_variable('USE_SHIBBOLETH', default=False, var_type='bool')
+
+if USE_SHIBBOLETH:
+    print('\n===-- SHIBBOLETH is enabled --===\n')
+    SHIBBOLETH = True
+    
+    PROFILE_UPDATE = False
+    
+    INSTALLED_APPS += ['shibboleth']
+    
+    SHIBBOLETH_ATTRIBUTE_MAP = {
+        'uid': (True, 'username'),
+        'givenName': (True, 'first_name'),
+        'sn': (True, 'last_name'),
+        'mail': (True, 'email'),
+    }
+    
+    AUTHENTICATION_BACKENDS.append('shibboleth.backends.ShibbolethRemoteUserBackend')
+    
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware') + 1,
+        'shibboleth.middleware.ShibbolethRemoteUserMiddleware'
+    )
+    
+    LOGIN_URL = '/Shibboleth.sso/Login?target=/projects'
+    LOGOUT_URL = '/Shibboleth.sso/Logout'
 
 '''
 Allauth configuration, see also:
@@ -25,12 +49,13 @@ http://rdmo.readthedocs.io/en/latest/configuration/authentication/allauth.html
 Keycloak via allauth:
 https://django-allauth.readthedocs.io/en/latest/providers.html#keycloak
 '''
+
 USE_ALLAUTH = get_env_variable('USE_ALLAUTH', default=False, var_type='bool')
 
 USE_KEYCLOAK = get_env_variable('USE_KEYCLOAK', default=False, var_type='bool')
 
 if USE_ALLAUTH or USE_KEYCLOAK:
-    print('\n===-- Allauth is enabled --===\n')
+    print('\n===-- AllAuth is enabled --===\n')
     
     ACCOUNT = True
     ACCOUNT_SIGNUP = False
@@ -52,8 +77,6 @@ if USE_ALLAUTH or USE_KEYCLOAK:
     AUTHENTICATION_BACKENDS.append('allauth.account.auth_backends.AuthenticationBackend')
 
 if USE_KEYCLOAK:
-    print('\n===-- Keycloak is enabled --===\n')
-
     SOCIALACCOUNT_PROVIDERS = {
         'keycloak': {
             'KEYCLOAK_URL': get_env_variable('KEYCLOAK_SERVER_URL'),
@@ -61,13 +84,6 @@ if USE_KEYCLOAK:
         },
     }
     INSTALLED_APPS += ['allauth.socialaccount.providers.keycloak',]
-
-'''
-Shibboleth, see also:
-http://rdmo.readthedocs.io/en/latest/configuration/authentication/shibboleth.html
-'''
-
-# SHIBBOLETH = get_env_variable('SHIBBOLETH', default=False, var_type='bool')
 
 '''
 Extra debug settings
