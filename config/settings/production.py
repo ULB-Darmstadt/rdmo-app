@@ -19,6 +19,8 @@ if USE_SHIBBOLETH:
     
     INSTALLED_APPS += ['shibboleth']
     
+    SHIBBOLETH_UNQUOTE_ATTRIBUTES = True
+    
     SHIBBOLETH_ATTRIBUTE_MAP = {
         'uid': (True, 'username'),
         'givenName': (True, 'first_name'),
