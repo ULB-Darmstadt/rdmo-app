@@ -113,3 +113,10 @@ EXPORT_REFERENCE_DOCX
 '''
 
 EXPORT_REFERENCE_DOCX = get_env_variable('EXPORT_REFERENCE_DOCX', default='', var_type='path')
+
+'''
+Extra modules
+'''
+
+if ENABLE_CATALOGS_TABLE_APP:
+    INSTALLED_APPS += ['django_tables2', 'catalogs_table_app']

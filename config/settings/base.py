@@ -278,3 +278,8 @@ LOGGING = {
 Extra settings
 '''
 DEBUG_TOOLBAR = get_env_variable('DEBUG_TOOLBAR', default=False, var_type='bool')
+
+'''
+Extra modules
+'''
+ENABLE_CATALOGS_TABLE_APP = get_env_variable('ENABLE_CATALOGS_TABLE_APP', default=False, var_type='bool')

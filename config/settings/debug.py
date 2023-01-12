@@ -101,3 +101,10 @@ if DEBUG_TOOLBAR:
     INSTALLED_APPS += ['debug_toolbar']
     MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
     INTERNAL_IPS = ['127.0.0.1']
+
+'''
+Extra modules
+'''
+
+if ENABLE_CATALOGS_TABLE_APP:
+    INSTALLED_APPS += ['django_tables2', 'catalogs_table_app']
