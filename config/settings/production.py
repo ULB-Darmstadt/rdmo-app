@@ -16,6 +16,7 @@ if USE_SHIBBOLETH:
     SHIBBOLETH = True
     
     PROFILE_UPDATE = False
+    PROFILE_DELETE = False
     
     INSTALLED_APPS += ['shibboleth']
     
