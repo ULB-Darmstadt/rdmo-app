@@ -185,6 +185,11 @@ EXPORT_FORMATS = (
     ('tex', _('LaTeX'))
 )
 
+EXPORT_PANDOC_ARGS = {
+    'pdf': ['-V', 'geometry:a4paper, margin=2.5cm', '--pdf-engine=xelatex'],
+    'rtf': ['--standalone']
+}
+
 '''
 Cache, see also:
 http://rdmo.readthedocs.io/en/latest/configuration/cache.html
