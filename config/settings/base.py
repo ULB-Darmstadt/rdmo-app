@@ -191,6 +191,11 @@ EXPORT_PANDOC_ARGS = {
 }
 
 '''
+Import settings
+'''
+DATA_UPLOAD_MAX_NUMBER_FIELDS = get_env_variable('DATA_UPLOAD_MAX_NUMBER_FIELDS', default=3000, var_type='int')
+
+'''
 Cache, see also:
 http://rdmo.readthedocs.io/en/latest/configuration/cache.html
 '''
