@@ -88,7 +88,6 @@ if USE_KEYCLOAK:
 '''
 Extra debug settings
 '''
-DATA_UPLOAD_MAX_NUMBER_FIELDS = int(get_env_variable('DATA_UPLOAD_MAX_NUMBER_FIELDS', 1000))
 # enable browsable API in DEBUG mode
 if DEBUG:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
