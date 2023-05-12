@@ -285,6 +285,17 @@ LOGGING = {
 }
 
 '''
+Extra RDMO user related settings
+add settings for upgrade 1.10 for rdmo/rdmo-pm#563
+'''
+PROFILE_DELETE = get_env_variable('PROFILE_DELETE', default=False, var_type='bool')
+ACCOUNT_ALLOW_USER_TOKEN = get_env_variable('ACCOUNT_ALLOW_USER_TOKEN', default=False, var_type='bool')
+PROJECT_QUESTIONS_AUTOSAVE = get_env_variable('PROJECT_QUESTIONS_AUTOSAVE', default=False, var_type='bool')
+
+if not 'ACCOUNT_ALLOW_USER_TOKEN' in SETTINGS_EXPORT: # for backwards compatibility rdmo < 1.10
+    SETTINGS_EXPORT.append('ACCOUNT_ALLOW_USER_TOKEN')
+
+'''
 Extra settings
 '''
 DEBUG_TOOLBAR = get_env_variable('DEBUG_TOOLBAR', default=False, var_type='bool')
