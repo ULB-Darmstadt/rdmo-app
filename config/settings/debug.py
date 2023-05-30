@@ -95,6 +95,11 @@ if DEBUG:
         'rest_framework.renderers.BrowsableAPIRenderer',
     )
 
+'''
+Extra debug toolbar settings
+'''
+DEBUG_TOOLBAR = get_env_variable('DEBUG_TOOLBAR', default=False, var_type='bool')
+
 # enable debug toolbar
 if DEBUG_TOOLBAR:
     INSTALLED_APPS += ['debug_toolbar']

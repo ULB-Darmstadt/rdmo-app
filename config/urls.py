@@ -15,9 +15,10 @@ urlpatterns = [
     path('admin/', admin.site.urls)
 ]
 
-if settings.DEBUG_TOOLBAR:
-    import debug_toolbar
-    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
+if settings.DEBUG:  # only allow debug toolbar if DEBUG is True
+    if settings.DEBUG_TOOLBAR:
+        import debug_toolbar
+        urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
 
 if settings.ENABLE_CATALOGS_TABLE_APP:
     urlpatterns += [path('catalogs-table/', include('catalogs_table_app.urls'))]
