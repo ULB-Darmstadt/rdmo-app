@@ -7,45 +7,6 @@ from rdmo.core.utils import sanitize_url
 from dotenv import load_dotenv
 
 '''
-Local Paths, settings using pathlib
-https://github.com/feldroy/two-scoops-of-django-3.x/blob/master/code/chapter_05_example_29.py
-'''
-# set path-dependend settings
-PROJECT_DIR = BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = PROJECT_DIR.parent
-MEDIA_ROOT = BASE_DIR / 'media_root'
-STATIC_ROOT = BASE_DIR / 'static_root'
-FIXTURE_DIRS = (
-    BASE_DIR / 'fixtures',
-)
-
-# update STATICFILES_DIRS for the vendor directory
-STATICFILES_DIRS = [
-    BASE_DIR / 'vendor/'
-]
-
-'''
-Environment variables 
-Determines if the Production or Debug environment file should be selected.
-Checks if the selected .env file exists in the BASE_DIR and loads it.
-'''
-
-ENV_FILE_MAPPER = {
-    'production': BASE_DIR / '.env',
-    'debug': BASE_DIR / '.DEBUG.env'
-    }
-
-ENV_NAME = 'production'
-
-if get_env_variable('LOAD_DEBUG_ENV',default=False, var_type='bool'):
-    ENV_NAME = 'debug'
-    
-ENV_FILE = ENV_FILE_MAPPER.get(ENV_NAME)
-
-check_env_file_exists(ENV_FILE)
-load_dotenv(ENV_FILE, override=True)
-
-'''
 Import default settings from rdmo.core
 '''
 
@@ -214,77 +175,6 @@ CACHES = {
 }
 
 '''
-Logging configuration
-Added logging.handlers.WatchedFileHandler to handlers for log rotation
-'''
-
-LOGGING_DIR = get_env_variable('LOGGING_DIR', default=BASE_DIR / 'log',var_type='path')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue'
-        }
-    },
-    'formatters': {
-        'default': {
-            'format': '[%(asctime)s] %(levelname)s: %(message)s'
-        },
-        'name': {
-            'format': '[%(asctime)s] %(levelname)s %(name)s: %(message)s'
-        },
-        'console': {
-            'format': '[%(asctime)s] %(message)s'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-        'error_log': {
-            'level': 'ERROR',
-            'class':'logging.handlers.WatchedFileHandler',
-            'filename': LOGGING_DIR / 'error.log',
-            'formatter': 'default'
-        },
-        'rdmo_log': {
-            'level': 'DEBUG',
-            'class':'logging.handlers.WatchedFileHandler',
-            'filename': LOGGING_DIR / 'rdmo.log',
-            'formatter': 'name'
-        },
-        'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'console'
-        }
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
-        'django.request': {
-            'handlers': ['mail_admins', 'error_log'],
-            'level': 'DEBUG',
-            'propagate': True
-        },
-        'rdmo': {
-            'handlers': ['rdmo_log','console'],
-            'level': 'DEBUG',
-            'propagate': False
-        }
-    }
-}
-
-'''
 Extra RDMO user related settings
 add settings for upgrade 1.10 for rdmo/rdmo-pm#563
 '''
@@ -292,8 +182,6 @@ PROFILE_DELETE = get_env_variable('PROFILE_DELETE', default=False, var_type='boo
 ACCOUNT_ALLOW_USER_TOKEN = get_env_variable('ACCOUNT_ALLOW_USER_TOKEN', default=False, var_type='bool')
 PROJECT_QUESTIONS_AUTOSAVE = get_env_variable('PROJECT_QUESTIONS_AUTOSAVE', default=False, var_type='bool')
 
-if not 'ACCOUNT_ALLOW_USER_TOKEN' in SETTINGS_EXPORT: # for backwards compatibility rdmo < 1.10
-    SETTINGS_EXPORT.append('ACCOUNT_ALLOW_USER_TOKEN')
 
 '''
 Extra modules
