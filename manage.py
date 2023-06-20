@@ -2,15 +2,28 @@
 import os
 import sys
 
-if __name__ == "__main__":
-    
-    LOAD_DEBUG_ENV = os.environ.get('LOAD_DEBUG_ENV', False)
-    if LOAD_DEBUG_ENV:
-        # print(f'\n=== LOAD_DEBUG_ENV=True, using .DEBUG.env ===\n')
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.debug")
-    else:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
 
-    from django.core.management import execute_from_command_line
+def main() -> None:
+    """
+    Main function.
 
-    execute_from_command_line(sys.argv)
+    It does several things:
+    1. Sets default settings module, if it is not set
+    2. Warns if Django is not installed
+    3. Executes any given command
+    """
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+
+    try:
+        from django.core import management  # noqa: WPS433
+    except ImportError:
+        raise ImportError(
+            "Couldn't import Django. Are you sure it's installed and " +
+            'available on your PYTHONPATH environment variable? Did you ' +
+            'forget to activate a virtual environment?',
+        )
+
+    management.execute_from_command_line(sys.argv)
+
+if __name__ == '__main__':
+    main()
