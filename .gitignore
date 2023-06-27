@@ -21,3 +21,15 @@ __pycache__/
 /theme
 /plugins
 /.pytest_cache
+
+/*.env
+!/.template.env
+!/.template.DEBUG.env
+!/.template.multisite.DB.env
+
+### VisualStudioCode template
+.vscode/*
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
