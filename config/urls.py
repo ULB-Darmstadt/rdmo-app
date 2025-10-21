@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from rdmo.core.views import about, api, home
+from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path('', home, name='home'),
@@ -12,7 +13,7 @@ urlpatterns = [
     path('api/v1/', include('rdmo.core.urls.v1')),
 
     path('admin/', admin.site.urls)
-]
+] + debug_toolbar_urls()
 
 handler400 = 'rdmo.core.views.bad_request'
 handler403 = 'rdmo.core.views.forbidden'
