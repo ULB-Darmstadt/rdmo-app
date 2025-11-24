@@ -1,0 +1,4 @@
+django-debug-toolbar
+Werkzeug
+aiosmtpd
+django-model-info
