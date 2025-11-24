@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
@@ -14,6 +15,11 @@ urlpatterns = [
 
     path('admin/', admin.site.urls)
 ] + debug_toolbar_urls()
+
+if 'drf_spectacular_sidecar' in settings.INSTALLED_APPS:
+    urlpatterns += [
+        path('api/v1/', include('rdmo.core.urls.v1.openapi')),
+    ]
 
 handler400 = 'rdmo.core.views.bad_request'
 handler403 = 'rdmo.core.views.forbidden'

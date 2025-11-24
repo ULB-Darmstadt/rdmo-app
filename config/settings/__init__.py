@@ -1,9 +1,12 @@
 from pathlib import Path
+from packaging.version import Version, parse
 
 from split_settings.tools import include, optional
 
+from rdmo import __version__ as rdmo_version
 from rdmo.core.settings import *  # import all rdmo default settings
 from rdmo.core.utils import sanitize_url
+
 
 BASE_URL = None
 
@@ -13,7 +16,11 @@ STATIC_ROOT = BASE_DIR / 'static_root'
 
 # the list of included files can be extended to accommodate a more complex setup
 include(
-    optional('local.py')
+    optional('local.py'),
+    'auth.py',
+    'db.py',
+    'logging.py',
+    optional('plugins.py'),
 )
 
 # prepend the BASE_URL to the different URL settings
