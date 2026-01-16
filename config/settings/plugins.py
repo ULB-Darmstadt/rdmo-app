@@ -3,7 +3,7 @@ import sys
 from django.utils.translation import gettext_lazy as _
 
 # Example: mount a sibling repo / a tests app somewhere nearby
-EXTRA_APPS_DIR = BASE_DIR / ".." / "rdmo" / "testing" / "plugins"   # adjust
+EXTRA_APPS_DIR = BASE_DIR.parent / "rdmo" / "testing" / "plugins"   # adjust
 if EXTRA_APPS_DIR.exists():
     sys.path.insert(0, str(EXTRA_APPS_DIR.parent))  # make parent importable
 
@@ -23,9 +23,9 @@ PLUGINS = [
     'plugins.project_export.exports.SimpleExportPlugin',
     'plugins.project_snapshot_export.exports.SimpleSnapshotExportPlugin',
     'plugins.project_import.imports.SimpleImportPlugin',
-    # 3rd_part plugins
-    "MaRDMO.main.MaRDMOExportProvider",
-    "rdmo_sensorsearch.providers.SensorsProvider",
+    # 3rd_party plugins
+    # "MaRDMO.main.MaRDMOExportProvider",
+    # "rdmo_sensorsearch.providers.SensorsProvider",
 ]
 
 if not 'plugins' in INSTALLED_APPS and EXTRA_APPS_DIR.exists():
@@ -34,11 +34,11 @@ if not 'plugins' in INSTALLED_APPS and EXTRA_APPS_DIR.exists():
     # ]
 
     OPTIONSET_PROVIDERS = [
-        ('simple', _('Simple provider'), 'rdmo.options.providers.SimpleProvider')
+        # ('simple', _('Simple provider'), 'rdmo.options.providers.SimpleProvider')
     ]
 
     PROJECT_ISSUE_PROVIDERS = [
-        ('simple', _('Simple provider'), 'rdmo.projects.providers.SimpleIssueProvider')
+        # ('simple', _('Simple provider'), 'rdmo.projects.providers.SimpleIssueProvider')
     ]
 
     # PROJECT_IMPORTS = [
