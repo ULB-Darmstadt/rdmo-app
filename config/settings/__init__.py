@@ -20,6 +20,7 @@ include(
     'auth.py',
     'db.py',
     'logging.py',
+    'rdmo.py',
     optional('plugins.py'),
 )
 
