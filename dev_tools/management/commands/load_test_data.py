@@ -5,10 +5,9 @@ import shutil
 from pathlib import Path
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
+from django.core.management.base import BaseCommand, CommandError
 
-from rdmo.accounts.utils import set_group_permissions
 from rdmo.core.xml import parse_xml_to_elements
 from rdmo.management.imports import import_elements
 
@@ -57,25 +56,46 @@ class Command(BaseCommand):
 
     def load_fixtures(self):
         """Load database fixtures from the fixture directories."""
-        allowed_file_stems = {
-            'accounts', 'conditions', 'domain', 'groups', 'options', 'overlays',
-            'projects', 'questions', 'sites', 'tasks', 'users', 'views'
-        }
+        fixture_order = [
+            "sites",
+            "groups",
+            "users",
+            "accounts",
+            "domain",
+            "conditions",
+            "options",
+            "questions",
+            "tasks",
+            "views",
+            "overlays",
+            "projects",
+            "config",
+        ]
 
-        fixtures = set()
+        fixture_files = []
+
         for fixture_dir in settings.FIXTURE_DIRS:
-            for filename in Path(fixture_dir).iterdir():
-                if filename.stem in allowed_file_stems:
-                    fixtures.add(filename)
+            fixture_dir = Path(fixture_dir)
 
-        if fixtures:
-            try:
-                call_command('loaddata', *fixtures)
-                set_group_permissions()
-                self.stdout.write(self.style.SUCCESS(f"Successfully loaded test fixtures from: {fixtures}"))
-            except CommandError as e:
-                logger.error("Error loading fixtures: %s", str(e))
-                raise CommandError("Failed to load fixtures.") from e
+            for stem in fixture_order:
+                fixture_files.extend(sorted(fixture_dir.glob(f"{stem}.json")))
+
+        if not fixture_files:
+            raise CommandError("No fixture files found.")
+
+        self.stdout.write(self.style.WARNING("Loading fixtures:"))
+        for fixture in fixture_files:
+            self.stdout.write(f"  {fixture}")
+
+        call_command("loaddata", *map(str, fixture_files), verbosity=2)
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Successfully loaded test fixtures from: {}".format(
+                    ", ".join(map(str, fixture_files))
+                )
+            )
+        )
 
     def copy_files(self):
         """Copy test media files to MEDIA_ROOT."""
@@ -89,7 +109,7 @@ class Command(BaseCommand):
                 logger.error("Error copying media files: %s", str(e))
                 raise CommandError("Failed to copy media files.") from e
         else:
-            self.stdout.write(self.style.WARNING("Media path does not exist: {}".format(RDMO_MEDIA_ROOT)))
+            self.stdout.write(self.style.WARNING(f"Media path does not exist: {RDMO_MEDIA_ROOT}"))
 
     def load_json_data(self):
         """Load JSON data from catalogs.json."""
@@ -104,7 +124,7 @@ class Command(BaseCommand):
                     logger.error("Error parsing JSON data: %s", str(e))
                     raise CommandError("Failed to load JSON data.") from e
             else:
-                self.stdout.write(self.style.WARNING("JSON file not found: {}".format(json_file)))
+                self.stdout.write(self.style.WARNING(f"JSON file not found: {json_file}"))
 
     def load_content_from_rdmo_catalog(self):
         """Import all XML contents from the rdmo-catalog repository using internal RDMO functions."""
