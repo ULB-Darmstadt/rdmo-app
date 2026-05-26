@@ -28,7 +28,7 @@ PLUGINS = [
     # "rdmo_sensorsearch.providers.SensorsProvider",
 ]
 
-if not 'plugins' in INSTALLED_APPS and EXTRA_APPS_DIR.exists():
+if 'plugins' not in INSTALLED_APPS and EXTRA_APPS_DIR.exists():
     # PROJECT_SNAPSHOT_EXPORTS = [
     #     ('xml', _('RDMO XML'), 'plugins.project_snapshot_export.exports.SimpleSnapshotExportPlugin'),
     # ]

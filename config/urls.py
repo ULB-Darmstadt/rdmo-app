@@ -2,8 +2,9 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
-from rdmo.core.views import about, api, home
 from debug_toolbar.toolbar import debug_toolbar_urls
+
+from rdmo.core.views import about, api, home
 
 urlpatterns = [
     path('', home, name='home'),

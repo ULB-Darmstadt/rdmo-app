@@ -1,13 +1,12 @@
-from pathlib import Path
-from packaging.version import Version, parse
 from importlib.util import find_spec  # used in db.py
+from pathlib import Path
 
+from packaging.version import Version, parse
 from split_settings.tools import include, optional
 
 from rdmo import __version__ as rdmo_version
 from rdmo.core.settings import *  # import all rdmo default settings
 from rdmo.core.utils import sanitize_url
-
 
 BASE_URL = None
 
