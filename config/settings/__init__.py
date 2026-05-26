@@ -1,5 +1,6 @@
 from pathlib import Path
 from packaging.version import Version, parse
+from importlib.util import find_spec  # used in db.py
 
 from split_settings.tools import include, optional
 

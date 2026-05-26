@@ -4,17 +4,23 @@ The database connection to be used, see also:
 http://rdmo.readthedocs.io/en/latest/configuration/databases.html
 '''
 try:
-    if HOME_IMAGES:
-        _version_name = '30'
+    _version_name = "30" if HOME_IMAGES else None
 except NameError:
+    _version_name = None
+
+if _version_name is None:
     _version_name = f"{parse(rdmo_version).major}{parse(rdmo_version).minor}"
 
+if find_spec("rdmo.config") is not None:
+    _version_name += "_config"
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': f'rdmo_dev_db_{_version_name}.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": f"rdmo_dev_db_{_version_name}.sqlite3",
     }
 }
+
 
 # DATABASES = {
 #     'default': {
