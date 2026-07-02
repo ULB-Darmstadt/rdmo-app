@@ -18,10 +18,12 @@ STATIC_ROOT = BASE_DIR / 'static_root'
 include(
     optional('local.py'),
     'auth.py',
+    'email.py',
     'db.py',
     'logging.py',
-    'rdmo.py',
-    optional('plugins.py'),
+    'rdmo/features.py',
+    'local_development.py',
+    optional('rdmo.plugins.py'),
 )
 
 # prepend the BASE_URL to the different URL settings

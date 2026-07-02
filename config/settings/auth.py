@@ -7,6 +7,7 @@ http://rdmo.readthedocs.io/en/latest/configuration/authentication/allauth.html
 ACCOUNT = True
 ACCOUNT_SIGNUP = True
 SOCIALACCOUNT = True
+SOCIALACCOUNT_SIGNUP = True
 
 INSTALLED_APPS += [
     'allauth',

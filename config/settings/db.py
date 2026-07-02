@@ -4,14 +4,18 @@ The database connection to be used, see also:
 http://rdmo.readthedocs.io/en/latest/configuration/databases.html
 '''
 try:
-    _version_name = "30" if HOME_IMAGES else None
+    _version_name = "300" if HOME_IMAGES else None
 except NameError:
     _version_name = None
 
 if _version_name is None:
     _version_name = f"{parse(rdmo_version).major}{parse(rdmo_version).minor}"
 
-if find_spec("rdmo.config") is not None:
+try:
+    from rdmo.config.models import Plugin
+except ImportError:
+    pass
+else:
     _version_name += "_config"
 
 DATABASES = {
